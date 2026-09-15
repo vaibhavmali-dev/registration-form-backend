@@ -5,14 +5,11 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import { connectDB } from './config/db.js';
+import registrationRoutes from './routes/registrationRoutes.js';
 
 dotenv.config();
-
 connectDB();
-
 const app: Application = express();
-
-
 app.use(helmet());
 
 app.use(cors({
@@ -29,16 +26,18 @@ const limiter = rateLimit({
   max: 100, 
   message: { error: 'Too many requests from this IP, please try again after 15 minutes.' }
 });
+
 app.use('/api', limiter);
 
 app.use(express.json());
 
+app.use('/api/registrations', registrationRoutes);
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', message: 'Server is running securely.' });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
