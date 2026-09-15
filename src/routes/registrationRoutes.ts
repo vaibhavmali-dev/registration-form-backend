@@ -8,16 +8,19 @@ import {
 } from '../controllers/registrationController.js';
 import { validate } from '../middlewares/validate.js';
 import { registrationSchema } from '../schemas/registrationSchema.js';
+import { requireApiKey } from '../middlewares/apiKeyAuth.js'; 
 
 const router = Router();
 
+// Routes for /api/registrations
 router.route('/')
-  .post(validate(registrationSchema), createRegistration)
-  .get(getRegistrations);
+  .post(validate(registrationSchema), createRegistration) 
+  .get(requireApiKey, getRegistrations);                  
 
+// Routes for /api/registrations/:id
 router.route('/:id')
-  .get(getRegistrationById)
-  .patch(updateRegistration)
-  .delete(deleteRegistration);
+  .get(requireApiKey, getRegistrationById)                
+  .patch(requireApiKey, updateRegistration)               
+  .delete(requireApiKey, deleteRegistration);            
 
 export default router;
