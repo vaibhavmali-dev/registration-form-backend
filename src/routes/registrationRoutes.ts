@@ -2,7 +2,9 @@ import { Router } from 'express';
 import { 
   createRegistration, 
   getRegistrations, 
-  getRegistrationById 
+  getRegistrationById,
+  updateRegistration,
+  deleteRegistration
 } from '../controllers/registrationController.js';
 import { validate } from '../middlewares/validate.js';
 import { registrationSchema } from '../schemas/registrationSchema.js';
@@ -14,6 +16,8 @@ router.route('/')
   .get(getRegistrations);
 
 router.route('/:id')
-  .get(getRegistrationById);
+  .get(getRegistrationById)
+  .patch(updateRegistration)
+  .delete(deleteRegistration);
 
 export default router;
