@@ -11,6 +11,7 @@ import rateLimit from "express-rate-limit";
 import { connectDB } from "./config/db.js";
 import registrationRoutes from "./routes/registrationRoutes.js";
 import { notFound } from "./middlewares/notFound.js";
+import { errorHandler } from './middlewares/errorHandler.js';
 
 dotenv.config();
 connectDB();
@@ -50,6 +51,7 @@ app.get("/health", (req: Request, res: Response) => {
 });
 
 app.use(notFound);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
