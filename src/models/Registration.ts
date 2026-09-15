@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IRegistration extends Document {
   firstName: string;
@@ -18,7 +18,7 @@ export interface IRegistration extends Document {
   eventTime: string;
   showOtherWorkshops: boolean;
   showOtherSeries: boolean;
-  subscribePosts: boolean; 
+  subscribePosts: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,7 +31,13 @@ const RegistrationSchema: Schema = new Schema(
     dateOfBirth: { type: String, required: true },
     parentFirstName: { type: String, required: true, trim: true },
     parentLastName: { type: String, trim: true },
-    email: { type: String, required: true, trim: true, lowercase: true },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+      unique: true,
+    },
     pinCode: { type: String, required: true },
     country: { type: String, required: true },
     timeZone: { type: String, required: true },
@@ -45,8 +51,10 @@ const RegistrationSchema: Schema = new Schema(
     subscribePosts: { type: Boolean, required: true },
   },
   {
-    timestamps: true, 
-  }
+    timestamps: true,
+  },
 );
 
-export const Registration = mongoose.models.Registration || mongoose.model<IRegistration>('Registration', RegistrationSchema);
+export const Registration =
+  mongoose.models.Registration ||
+  mongoose.model<IRegistration>("Registration", RegistrationSchema);
