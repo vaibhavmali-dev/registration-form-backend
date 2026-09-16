@@ -106,3 +106,24 @@ export const deleteRegistration = async (req: Request, res: Response, next: Next
     next(error);
   }
 };
+
+
+export const checkEmailExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      res.status(400).json({ status: 'error', message: 'Email is required' });
+      return;
+    }
+
+    const existingRegistration = await Registration.findOne({ email: email.toLowerCase() });
+
+    res.status(200).json({
+      status: 'success',
+      exists: !!existingRegistration 
+    });
+  } catch (error) {
+    next(error);
+  }
+};

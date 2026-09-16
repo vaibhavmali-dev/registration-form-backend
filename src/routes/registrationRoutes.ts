@@ -4,23 +4,25 @@ import {
   getRegistrations, 
   getRegistrationById,
   updateRegistration,
-  deleteRegistration
+  deleteRegistration,
+  checkEmailExists 
 } from '../controllers/registrationController.js';
 import { validate } from '../middlewares/validate.js';
 import { registrationSchema } from '../schemas/registrationSchema.js';
-import { requireApiKey } from '../middlewares/apiKeyAuth.js'; 
+import { requireApiKey } from '../middlewares/apiKeyAuth.js';
 
 const router = Router();
 
-// Routes for /api/registrations
 router.route('/')
-  .post(validate(registrationSchema), createRegistration) 
-  .get(requireApiKey, getRegistrations);                  
+  .post(validate(registrationSchema), createRegistration)
+  .get(requireApiKey, getRegistrations);
 
-// Routes for /api/registrations/:id
+router.route('/check-email')
+  .post(checkEmailExists);
+
 router.route('/:id')
-  .get(requireApiKey, getRegistrationById)                
-  .patch(requireApiKey, updateRegistration)               
-  .delete(requireApiKey, deleteRegistration);            
+  .get(requireApiKey, getRegistrationById)
+  .patch(requireApiKey, updateRegistration)
+  .delete(requireApiKey, deleteRegistration);
 
 export default router;
