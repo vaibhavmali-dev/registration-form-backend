@@ -4,12 +4,8 @@ import { Registration } from '../models/Registration.js';
 
 export const createRegistration = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const registrationData = {
-      ...req.body,
-      subscribePosts: req.body.subscribePosts === 'yes',
-    };
-
-    const newRegistration = await Registration.create(registrationData);
+   
+    const newRegistration = await Registration.create(req.body);
 
     res.status(201).json({
       status: 'success',

@@ -3,22 +3,24 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IRegistration extends Document {
   firstName: string;
   lastName?: string;
-  gender: string;
-  dateOfBirth: string;
-  parentFirstName: string;
-  parentLastName?: string;
   email: string;
-  pinCode: string;
-  country: string;
-  timeZone: string;
   phoneNumber: string;
-  seriesName: string;
-  festival: string;
-  eventDate: string;
-  eventTime: string;
-  showOtherWorkshops: boolean;
-  showOtherSeries: boolean;
-  subscribePosts: boolean;
+  city: string;
+  linkedInUrl?: string;
+  portfolioUrl?: string;
+  
+  highestEducation: string;
+  currentCompany?: string;
+  currentRole: string;
+  yearsOfExperience: string;
+  primarySkill: string;
+  
+  currentCTC?: string;
+  expectedCTC: string;
+  noticePeriod: string;
+  workSetup: string;
+  willingToRelocate: boolean;
+  
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,32 +29,27 @@ const RegistrationSchema: Schema = new Schema(
   {
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, trim: true },
-    gender: { type: String, required: true },
-    dateOfBirth: { type: String, required: true },
-    parentFirstName: { type: String, required: true, trim: true },
-    parentLastName: { type: String, trim: true },
-    email: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-      unique: true,
-    },
-    pinCode: { type: String, required: true },
-    country: { type: String, required: true },
-    timeZone: { type: String, required: true },
+    email: { type: String, required: true, trim: true, lowercase: true, unique: true },
     phoneNumber: { type: String, required: true },
-    seriesName: { type: String, required: true },
-    festival: { type: String, required: true },
-    eventDate: { type: String, required: true },
-    eventTime: { type: String, required: true },
-    showOtherWorkshops: { type: Boolean, default: false },
-    showOtherSeries: { type: Boolean, default: false },
-    subscribePosts: { type: Boolean, required: true },
+    city: { type: String, required: true, trim: true },
+    linkedInUrl: { type: String, trim: true },
+    portfolioUrl: { type: String, trim: true },
+    
+    highestEducation: { type: String, required: true },
+    currentCompany: { type: String, trim: true },
+    currentRole: { type: String, required: true, trim: true },
+    yearsOfExperience: { type: String, required: true },
+    primarySkill: { type: String, required: true },
+    
+    currentCTC: { type: String, trim: true },
+    expectedCTC: { type: String, required: true, trim: true },
+    noticePeriod: { type: String, required: true },
+    workSetup: { type: String, required: true },
+    willingToRelocate: { type: Boolean, default: false },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export const Registration =
