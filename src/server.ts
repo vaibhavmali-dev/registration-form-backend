@@ -8,6 +8,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
 import { connectDB } from "./config/db.js";
 import registrationRoutes from "./routes/registrationRoutes.js";
 import { notFound } from "./middlewares/notFound.js";
@@ -17,6 +18,7 @@ dotenv.config();
 connectDB();
 const app: Application = express();
 const PORT = process.env.PORT || 5001;
+
 app.use(helmet());
 
 app.use(
@@ -41,6 +43,11 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 app.use(express.json());
+app.use((req: Request, res: Response, next: import('express').NextFunction) => {
+  if (req.body) req.body = mongoSanitize.sanitize(req.body);
+  if (req.params) req.params = mongoSanitize.sanitize(req.params);
+  next();
+});
 
 app.use("/api/registrations", registrationRoutes);
 

@@ -1,63 +1,131 @@
-Registration API
-1. Create Registration
+# Job Application Form API
 
-POST
+A secure Node.js, Express, and MongoDB backend built to support a complex, multi-step job application form. It features strict payload validation, NoSQL injection protection, and protected CRUD endpoints.
 
-http://localhost:8000/api/registrations
+## Tech Stack
+* **Runtime:** Node.js
+* **Framework:** Express.js (v5)
+* **Database:** MongoDB & Mongoose
+* **Validation:** Zod
+* **Security:** Helmet, express-rate-limit, express-mongo-sanitize, CORS
 
+---
 
-No API key required.
+## Local Setup
 
-Body
+1. **Clone and install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Environment Variables:**
+   Create a `.env` file in the root directory and add the following:
+   ```env
+   PORT=8000
+   NODE_ENV=development
+   MONGODB_URI=your_mongodb_connection_string
+   FRONTEND_URL=http://localhost:5173
+   API_KEY=your_secret_api_key_here
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+   The server will start at `http://localhost:8000`.
+
+---
+
+## API Documentation
+
+### Public Endpoints
+
+#### 1. Submit Application
+**Endpoint:** `POST /api/registrations`
+
+**Description:** Creates a new job application record. Validated strictly against the Zod schema.
+
+**Body:**
+```json
 {
-  "firstName": "John",
-  "lastName": "Doe",
-  "gender": "male",
-  "dateOfBirth": "1998-05-15",
-  "parentFirstName": "Robert",
-  "email": "john.postman@example.com",
-  "pinCode": "400001",
-  "country": "India",
-  "timeZone": "Asia/Kolkata",
-  "phoneNumber": "+919876543210",
-  "seriesName": "Frontend Architecture",
-  "festival": "React Summit",
-  "eventDate": "2026-10-15",
-  "eventTime": "14:30",
-  "subscribePosts": "yes"
+  "firstName": "String (Required)",
+  "lastName": "String (Optional)",
+  "email": "String (Required, Unique)",
+  "phoneNumber": "String (Required)",
+  "city": "String (Required)",
+  "highestEducation": "Enum [bachelors, masters, phd, diploma, other]",
+  "currentRole": "String (Required)",
+  "yearsOfExperience": "Enum [fresher, 0_1, 1_3, 3_5, 5_plus]",
+  "primarySkill": "String (Required)",
+  "expectedCTC": "String (Required)",
+  "noticePeriod": "Enum [immediate, 15_days, 30_days, 60_days, 90_days]",
+  "workSetup": "Enum [remote, hybrid, onsite]",
+  "willingToRelocate": "Boolean"
 }
+```
+**Success Response:** `201 Created`
 
+#### 2. Check Email Uniqueness
+**Endpoint:** `POST /api/registrations/check-email`
 
-Expected: 201 Created
+**Description:** Proactively checks if an email is already in the database (used for frontend step validation).
 
-2. Get All Registrations
-
-GET
-
-http://localhost:8000/api/registrations
-
-Header
-x-api-key: my_super_secret_admin_key_2026
-
-
-Expected: 200 OK
-
-3. Update Registration
-
-PATCH
-
-http://localhost:8000/api/registrations/<id>
-
-
-Replace <id> with the MongoDB _id.
-
-Header
-x-api-key: my_super_secret_admin_key_2026
-
-Body
+**Body:**
+```json
 {
-  "firstName": "Jonathan"
+  "email": "applicant@example.com"
 }
+```
+**Success Response:** `200 OK`
+```json
+{
+  "status": "success",
+  "exists": true
+}
+```
 
+---
 
-Expected: 200 OK
+### Protected Endpoints (Admin)
+Note: All endpoints below require the custom API Key in the headers.
+
+**Headers required:**
+`x-api-key: your_secret_api_key_here`
+
+#### 3. Get All Applications
+**Endpoint:** `GET /api/registrations`
+
+**Description:** Fetches all submitted job applications, sorted by newest first.
+
+**Success Response:** `200 OK` (Array of objects)
+
+#### 4. Get Application by ID
+**Endpoint:** `GET /api/registrations/:id`
+
+**Description:** Fetches a specific application record.
+
+**Success Response:** `200 OK`
+
+#### 5. Update Application
+**Endpoint:** `PATCH /api/registrations/:id`
+
+**Description:** Partially updates an existing application.
+
+**Body:** Any field from the submission schema.
+
+**Success Response:** `200 OK`
+
+#### 6. Delete Application
+**Endpoint:** `DELETE /api/registrations/:id`
+
+**Description:** Permanently removes an application from the database.
+
+**Success Response:** `200 OK`
+
+---
+
+## Security Features
+
+* **Rate Limiting:** Global limit of 100 requests per 15 minutes to prevent spam.
+* **NoSQL Injection Prevention:** Custom implementation of express-mongo-sanitize on request body and parameters.
+* **Data Sanitization:** Strict typing and formatting via Zod middleware before database interaction.
